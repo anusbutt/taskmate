@@ -1,0 +1,101 @@
+name: DO Volume Cleanup
+
+on:
+  workflow_dispatch:
+    inputs:
+      action:
+        description: 'Action to perform'
+        required: true
+        default: 'list'
+        type: choice
+        options:
+          - list
+          - delete-all
+          - delete
+      volume_id:
+        description: 'Volume ID to delete (only required for delete action)'
+        required: false
+        type: string
+
+jobs:
+  manage-volumes:
+    runs-on: ubuntu-latest
+    steps:
+      - name: List all volumes
+        if: ${{ github.event.inputs.action == 'list' }}
+        run: |
+          echo "=== DigitalOcean Volumes ==="
+          curl -s -X GET \
+            -H "Authorization: Bearer ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }}" \
+            -H "Content-Type: application/json" \
+            "https://api.digitalocean.com/v2/volumes" | \
+            python3 -c "
+          import sys, json
+          data = json.load(sys.stdin)
+          volumes = data.get('volumes', [])
+          if not volumes:
+              print('No volumes found.')
+          else:
+              print(f'Found {len(volumes)} volume(s):\n')
+              for v in volumes:
+                  print(f'ID:     {v[\"id\"]}')
+                  print(f'Name:   {v[\"name\"]}')
+                  print(f'Size:   {v[\"size_gigabytes\"]} GB')
+                  print(f'Region: {v[\"region\"][\"slug\"]}')
+                  print(f'Status: {v.get(\"filesystem_type\", \"unknown\")}')
+                  print(f'Droplets: {v.get(\"droplet_ids\", [])}')
+                  print('---')
+          "
+
+      - name: Delete ALL volumes
+        if: ${{ github.event.inputs.action == 'delete-all' }}
+        run: |
+          echo "=== Fetching all volumes ==="
+          VOLUMES=$(curl -s -X GET \
+            -H "Authorization: Bearer ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }}" \
+            "https://api.digitalocean.com/v2/volumes" | \
+            python3 -c "import sys,json; [print(v['id']) for v in json.load(sys.stdin).get('volumes',[])]")
+
+          if [ -z "$VOLUMES" ]; then
+            echo "No volumes found. Nothing to delete."
+            exit 0
+          fi
+
+          echo "Volumes to delete:"
+          echo "$VOLUMES"
+          echo ""
+
+          for ID in $VOLUMES; do
+            echo -n "Deleting $ID ... "
+            STATUS=$(curl -s -o /tmp/resp.txt -w "%{http_code}" -X DELETE \
+              -H "Authorization: Bearer ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }}" \
+              "https://api.digitalocean.com/v2/volumes/$ID")
+            if [ "$STATUS" = "204" ]; then
+              echo "DELETED"
+            else
+              echo "FAILED (HTTP $STATUS)"
+              cat /tmp/resp.txt
+            fi
+          done
+          echo ""
+          echo "=== Done ==="
+
+      - name: Delete volume
+        if: ${{ github.event.inputs.action == 'delete' }}
+        run: |
+          VOLUME_ID="${{ github.event.inputs.volume_id }}"
+          if [ -z "$VOLUME_ID" ]; then
+            echo "ERROR: volume_id is required for delete action"
+            exit 1
+          fi
+          echo "Deleting volume: $VOLUME_ID"
+          HTTP_STATUS=$(curl -s -o /tmp/response.txt -w "%{http_code}" -X DELETE \
+            -H "Authorization: Bearer ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }}" \
+            "https://api.digitalocean.com/v2/volumes/$VOLUME_ID")
+          if [ "$HTTP_STATUS" = "204" ]; then
+            echo "Volume $VOLUME_ID deleted successfully."
+          else
+            echo "Failed to delete volume. HTTP status: $HTTP_STATUS"
+            cat /tmp/response.txt
+            exit 1
+          fi
