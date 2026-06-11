@@ -1,4 +1,0 @@
-secrets:
-  databaseUrl: "postgresql+asyncpg://neondb_owner:npg_fT0pPWtVC2mH@ep-fancy-mud-ahdw1yz8-pooler.c-3.us-east-1.aws.neon.tech/neondb?ssl=require"
-  jwtSecret: "your-secret-key-here-change-in-production"
-  geminiApiKey: "AIzaSyDGpJaQ2gtVZo6V77B_PCfSyg8zq6p86yg"
