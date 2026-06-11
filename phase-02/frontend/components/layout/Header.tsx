@@ -51,7 +51,7 @@ export function Header({ userName }: HeaderProps) {
               <span className="text-white font-bold text-xl">T</span>
             </div>
             <h1 className="text-xl sm:text-2xl font-bold gradient-text">
-              Todo App
+              TaskMate
             </h1>
           </div>
 

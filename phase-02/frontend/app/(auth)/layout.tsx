@@ -15,7 +15,7 @@ export default function AuthLayout({ children }: { children: ReactNode }) {
           <div className="w-10 h-10 rounded-xl gradient-primary flex items-center justify-center">
             <span className="text-white font-bold text-xl">T</span>
           </div>
-          <span className="text-xl font-bold gradient-text">Todo App</span>
+          <span className="text-xl font-bold gradient-text">TaskMate</span>
         </Link>
       </nav>
 

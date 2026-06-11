@@ -9,8 +9,9 @@ import { ErrorBoundary } from '@/components/error-boundary'
 import './globals.css'
 
 export const metadata: Metadata = {
-  title: 'Phase 2 Todo App',
-  description: 'Full-stack task management application with authentication',
+  title: 'TaskMate — AI-Powered Task Manager',
+  description:
+    'TaskMate is an AI-powered todo app. Create, update, complete and delete tasks by just chatting with the AI assistant.',
 }
 
 export const viewport: Viewport = {
@@ -24,7 +25,7 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html lang="en" suppressHydrationWarning className="scroll-smooth">
       <body className="antialiased">
         <ErrorBoundary>
           <ThemeProvider>

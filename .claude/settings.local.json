@@ -151,7 +151,17 @@
       "mcp__github__list_commits",
       "Bash(git pull:*)",
       "Bash(git stash:*)",
-      "Bash(kubectl set image:*)"
+      "Bash(kubectl set image:*)",
+      "Bash(git clone:*)",
+      "Bash(openssl rand:*)",
+      "Bash(git ls-tree:*)",
+      "Bash(xargs:*)",
+      "Bash(du:*)",
+      "Bash(git rm:*)",
+      "WebFetch(domain:pypi.org)",
+      "Bash(uv lock:*)",
+      "Bash(xcopy:*)",
+      "Bash(uv run python:*)"
     ]
   }
 }
