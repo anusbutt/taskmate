@@ -44,7 +44,7 @@ cd evolution-of-todo
 **Backend dependencies:**
 
 ```bash
-cd phase-02/backend
+cd backend
 pip install -r requirements.txt
 alembic upgrade head
 ```
@@ -52,13 +52,13 @@ alembic upgrade head
 **Frontend dependencies:**
 
 ```bash
-cd phase-02/frontend
+cd frontend
 npm install
 ```
 
 ### Environment Variables
 
-**Backend** — create `phase-02/backend/.env`:
+**Backend** — create `backend/.env`:
 
 ```env
 DATABASE_URL=postgresql+asyncpg://user:password@host:5432/taskmate
@@ -74,7 +74,7 @@ CORS_ORIGINS=http://localhost:3000,http://127.0.0.1:3000
 | `GROQ_API_KEY` | API key for the AI assistant (OpenAI-compatible LLM provider) |
 | `CORS_ORIGINS` | Comma-separated list of allowed frontend origins |
 
-**Frontend** — create `phase-02/frontend/.env.local`:
+**Frontend** — create `frontend/.env.local`:
 
 ```env
 NEXT_PUBLIC_API_URL=http://localhost:8000
@@ -90,11 +90,11 @@ Start the backend and frontend in separate terminals:
 
 ```bash
 # Terminal 1 — Backend
-cd phase-02/backend
+cd backend
 uvicorn app.main:app --reload --port 8000
 
 # Terminal 2 — Frontend
-cd phase-02/frontend
+cd frontend
 npm run dev
 ```
 
